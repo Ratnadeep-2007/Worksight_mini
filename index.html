@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WorkSight – AI-powered predictive HR engine for burnout detection through Profile Drift Analysis.">
+  <title>WorkSight – Predictive HR Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-mark">
+          <div class="logo-pulse"></div>
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2z" stroke="url(#lg1)" stroke-width="2.2"/>
+            <path d="M10 16c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="url(#lg1)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="20" r="2.5" fill="url(#lg1)"/>
+            <defs>
+              <linearGradient id="lg1" x1="2" y1="2" x2="30" y2="30">
+                <stop stop-color="#7c3aed"/>
+                <stop offset=".5" stop-color="#a78bfa"/>
+                <stop offset="1" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">WorkSight</span>
+          <span class="logo-tag">Predictive HR Engine</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-section-label">MAIN</div>
+    <nav class="nav-menu">
+      <button class="nav-item active" data-panel="dashboard" id="nav-dashboard">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-panel="baseline" id="nav-baseline">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span>Baseline DNA</span>
+        <div class="nav-badge">1</div>
+      </button>
+      <button class="nav-item" data-panel="digital" id="nav-digital">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20V10M18 20V4M6 20v-4"/></svg></div>
+        <span>Digital Exhaust</span>
+        <div class="nav-badge">2</div>
+      </button>
+      <button class="nav-item" data-panel="communication" id="nav-communication">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <span>Communication</span>
+        <div class="nav-badge">3</div>
+      </button>
+    </nav>
+
+    <div class="nav-section-label">OUTPUT</div>
+    <nav class="nav-menu">
+      <button class="nav-item" data-panel="results" id="nav-results">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <span>XAI Results</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-divider"></div>
+      <button class="nav-item" id="settingsBtn">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span>API Settings</span>
+      </button>
+      <div class="sidebar-status">
+        <div class="status-dot" id="apiDot"></div>
+        <span id="apiStatusLabel">API Key Not Set</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+        <p class="page-desc" id="pageDesc">Employee wellness overview &amp; workforce health</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" id="loadDemoBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Load Demo (Alex)
+        </button>
+        <button class="btn btn-glow" id="analyzeBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Analyze Drift
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== PANEL: DASHBOARD ===== -->
+    <section class="panel active" id="panel-dashboard">
+
+      <!-- Metric Strip -->
+      <div class="metric-strip">
+        <div class="metric-card">
+          <div class="metric-icon bg-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="metric-body">
+            <div class="metric-val" id="stat-total">0</div>
+            <div class="metric-label">Employees Tracked</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon bg-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="metric-body">
+            <div class="metric-val" id="stat-atrisk">0</div>
+            <div class="metric-label">At-Risk Employees</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon bg-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="metric-body">
+            <div class="metric-val" id="stat-burnout">—</div>
+            <div class="metric-label">Burnout Risk Score</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon bg-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="metric-body">
+            <div class="metric-val" id="stat-drift">—</div>
+            <div class="metric-label">Drift Level</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Grid -->
+      <div class="dash-grid">
+
+        <!-- Roster card -->
+        <div class="card card-roster">
+          <div class="card-header">
+            <h2>Employee Roster</h2>
+            <span class="card-badge">Live</span>
+          </div>
+          <div class="roster-body" id="rosterList">
+            <div class="roster-empty">
+              <div class="empty-graphic">
+                <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.2" width="80" height="80" opacity="0.25">
+                  <circle cx="40" cy="28" r="12"/><path d="M20 68v-6a16 16 0 0 1 16-16h8a16 16 0 0 1 16 16v6"/>
+                </svg>
+              </div>
+              <p>No employees analyzed yet.</p>
+              <span class="empty-hint">Click <strong>"Load Demo"</strong> then <strong>"Analyze Drift"</strong> to begin.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Architecture / Flow card -->
+        <div class="card card-arch">
+          <div class="card-header">
+            <h2>Four-Layer Architecture</h2>
+          </div>
+          <div class="arch-flow">
+            <div class="arch-node node-recruitment"><div class="arch-dot"></div><strong>Layer 1 — Baseline DNA</strong><span>Big Five · Cognitive Scores · Sentiment</span></div>
+            <div class="arch-line"></div>
+            <div class="arch-node node-operational"><div class="arch-dot"></div><strong>Layer 2 — Digital Exhaust</strong><span>Meetings · Login Patterns · Task Velocity</span></div>
+            <div class="arch-line"></div>
+            <div class="arch-node node-communication"><div class="arch-dot"></div><strong>Layer 3 — Communication</strong><span>Msg Frequency · Response Latency · Network</span></div>
+            <div class="arch-line"></div>
+            <div class="arch-node node-predictive"><div class="arch-dot"></div><strong>Layer 4 — Profile Drift AI</strong><span>Gemini · SHAP Tags · Intervention Tactics</span></div>
+          </div>
+        </div>
+
+        <!-- Privacy card -->
+        <div class="card card-privacy">
+          <div class="card-header">
+            <h2>🔒 Privacy-First Design</h2>
+          </div>
+          <ul class="privacy-list">
+            <li><span class="check">✓</span> No raw message content processed — metadata only</li>
+            <li><span class="check">✓</span> API key stored only in your browser localStorage</li>
+            <li><span class="check">✓</span> Managers see risk levels &amp; tags, never private data</li>
+            <li><span class="check">✓</span> All computation is client-side — no backend server</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PANEL: BASELINE DNA ===== -->
+    <section class="panel" id="panel-baseline">
+      <div class="form-layout">
+
+        <div class="card">
+          <div class="card-header"><h2>🧬 Big Five Personality Traits</h2></div>
+          <p class="card-hint">Baseline personality scores from recruitment assessments.</p>
+          <div class="slider-row"><label>Openness</label><input type="range" min="0" max="100" value="70" id="openness" class="slider"><span class="slider-val" id="val-openness">70</span></div>
+          <div class="slider-row"><label>Conscientiousness</label><input type="range" min="0" max="100" value="80" id="conscientiousness" class="slider"><span class="slider-val" id="val-conscientiousness">80</span></div>
+          <div class="slider-row"><label>Extraversion</label><input type="range" min="0" max="100" value="40" id="extraversion" class="slider"><span class="slider-val" id="val-extraversion">40</span></div>
+          <div class="slider-row"><label>Agreeableness</label><input type="range" min="0" max="100" value="75" id="agreeableness" class="slider"><span class="slider-val" id="val-agreeableness">75</span></div>
+          <div class="slider-row"><label>Neuroticism</label><input type="range" min="0" max="100" value="30" id="neuroticism" class="slider"><span class="slider-val" id="val-neuroticism">30</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>🧠 Cognitive &amp; Engagement</h2></div>
+          <div class="field"><label for="cognitiveScore">Cognitive Test Score</label><input type="number" id="cognitiveScore" min="0" max="100" value="82" placeholder="0–100"></div>
+          <div class="field"><label for="interviewSentiment">Interview Sentiment</label><select id="interviewSentiment"><option value="Very Positive" selected>Very Positive</option><option value="Positive">Positive</option><option value="Neutral">Neutral</option><option value="Negative">Negative</option></select></div>
+          <div class="field"><label for="initialEngagement">Initial Engagement Score</label><input type="number" id="initialEngagement" min="0" max="100" value="90" placeholder="0–100"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>👤 Employee Identity</h2></div>
+          <div class="field"><label for="employeeName">Full Name</label><input type="text" id="employeeName" placeholder="e.g. Alex Chen"></div>
+          <div class="field"><label for="employeeRole">Role at Hire</label><input type="text" id="employeeRole" placeholder="e.g. High-Focus Developer"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== PANEL: DIGITAL EXHAUST ===== -->
+    <section class="panel" id="panel-digital">
+      <div class="form-layout">
+
+        <div class="card">
+          <div class="card-header"><h2>📅 Meeting Density</h2></div>
+          <p class="card-hint">Compare current meeting load to baseline expectations.</p>
+          <div class="field"><label for="meetingsPerWeek">Current Meetings / Week</label><input type="number" id="meetingsPerWeek" min="0" max="60" value="22"></div>
+          <div class="field"><label for="meetingsBaseline">Baseline Meetings / Week</label><input type="number" id="meetingsBaseline" min="0" max="60" value="12"></div>
+          <div class="field"><label for="backToBackPct">Back-to-Back %</label><input type="number" id="backToBackPct" min="0" max="100" value="65"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>⏰ Work-Life Boundary</h2></div>
+          <div class="field"><label for="avgLoginTime">Avg Login Time</label><input type="time" id="avgLoginTime" value="08:15"></div>
+          <div class="field"><label for="avgLogoutTime">Avg Logout Time</label><input type="time" id="avgLogoutTime" value="21:45"></div>
+          <div class="field"><label for="lateNightLogins">Late-Night Logins / Month</label><input type="number" id="lateNightLogins" min="0" max="30" value="12"></div>
+          <div class="field"><label for="weekendLogins">Weekend Logins / Month</label><input type="number" id="weekendLogins" min="0" max="12" value="6"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>🚀 Task Velocity</h2></div>
+          <div class="field"><label for="taskCompletionCurrent">Current Completion Rate</label><input type="number" id="taskCompletionCurrent" min="0" max="100" value="55"></div>
+          <div class="field"><label for="taskCompletionBaseline">Baseline Completion Rate</label><input type="number" id="taskCompletionBaseline" min="0" max="100" value="85"></div>
+          <div class="field"><label for="avgTaskTime">Avg Completion Time (hrs)</label><input type="number" id="avgTaskTime" min="0" max="100" value="6.5" step="0.5"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== PANEL: COMMUNICATION ===== -->
+    <section class="panel" id="panel-communication">
+      <div class="form-layout">
+
+        <div class="card">
+          <div class="card-header"><h2>💬 Message Velocity</h2></div>
+          <p class="card-hint">Metadata-only analysis — no private content is ever processed.</p>
+          <div class="field"><label for="msgFrequency">Messages / Day (Current)</label><input type="number" id="msgFrequency" min="0" max="500" value="18"></div>
+          <div class="field"><label for="msgFrequencyBaseline">Messages / Day (Baseline)</label><input type="number" id="msgFrequencyBaseline" min="0" max="500" value="35"></div>
+          <div class="field"><label for="responseLatency">Response Latency (min)</label><input type="number" id="responseLatency" min="0" max="1440" value="45"></div>
+          <div class="field"><label for="responseLatencyBaseline">Baseline Latency (min)</label><input type="number" id="responseLatencyBaseline" min="0" max="1440" value="12"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>🕸️ Network Interaction</h2></div>
+          <div class="field"><label for="teamInteractionScore">Interaction Score (0–100)</label><input type="number" id="teamInteractionScore" min="0" max="100" value="35"></div>
+          <div class="field"><label for="teamInteractionBaseline">Baseline Score (0–100)</label><input type="number" id="teamInteractionBaseline" min="0" max="100" value="72"></div>
+          <div class="field"><label for="isolationFlag">Social Isolation Detected?</label><select id="isolationFlag"><option value="Yes" selected>Yes – Reduced cross-team comms</option><option value="No">No – Normal interaction patterns</option></select></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== PANEL: XAI RESULTS ===== -->
+    <section class="panel" id="panel-results">
+
+      <!-- Placeholder -->
+      <div class="results-empty" id="resultsPlaceholder">
+        <div class="empty-glow-ring">
+          <svg viewBox="0 0 120 120" width="120" height="120" fill="none">
+            <circle cx="60" cy="60" r="54" stroke="url(#emptyGrad)" stroke-width="2" stroke-dasharray="8 6" opacity="0.35"/>
+            <polygon points="65 38 45 60 58 60 55 82 75 60 62 60 65 38" stroke="url(#emptyGrad)" stroke-width="2" fill="none"/>
+            <defs><linearGradient id="emptyGrad" x1="0" y1="0" x2="120" y2="120"><stop stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+          </svg>
+        </div>
+        <h2>No Analysis Yet</h2>
+        <p>Enter employee data across the three input panels, then click <strong>Analyze Drift</strong>.</p>
+      </div>
+
+      <!-- Results Content (hidden until analysis) -->
+      <div class="results-body" id="resultsContent" style="display:none;">
+
+        <!-- Row 1: Score + Drift -->
+        <div class="results-row-top">
+          <div class="card card-score">
+            <div class="card-header"><h2>Burnout Risk Score</h2></div>
+            <div class="ring-wrapper">
+              <svg class="ring-svg" viewBox="0 0 180 180">
+                <defs>
+                  <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="100%" stop-color="#06b6d4"/>
+                  </linearGradient>
+                </defs>
+                <circle class="ring-track" cx="90" cy="90" r="78"/>
+                <circle class="ring-fill" id="ringProgress" cx="90" cy="90" r="78"/>
+              </svg>
+              <div class="ring-label">
+                <span class="ring-number" id="scoreNumber">0</span><span class="ring-pct">%</span>
+              </div>
+            </div>
+            <div class="risk-pill" id="riskBadge">—</div>
+          </div>
+
+          <div class="card card-drift">
+            <div class="card-header"><h2>Profile Drift Summary</h2></div>
+            <p class="drift-text" id="driftText">—</p>
+            <div class="drift-bar-container">
+              <div class="drift-bar-label"><span>Baseline DNA</span><span>Current Reality</span></div>
+              <div class="drift-bar-track"><div class="drift-bar-fill" id="driftBarFill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- XAI Tags -->
+        <div class="card card-xai">
+          <div class="card-header"><h2>🔍 XAI Reasoning Tags</h2><span class="card-badge">SHAP-Style</span></div>
+          <div class="xai-grid" id="xaiTags"></div>
+        </div>
+
+        <!-- Intervention -->
+        <div class="card card-intervention">
+          <div class="card-header"><h2>🛡️ Recommended Intervention</h2></div>
+          <div class="intervention-body" id="interventionText">—</div>
+        </div>
+
+        <!-- Raw JSON -->
+        <div class="card card-json">
+          <div class="card-header"><h2>API Response</h2><button class="btn btn-tiny" id="copyJsonBtn">Copy</button></div>
+          <pre class="json-pre" id="jsonOutput">{}</pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ SETTINGS MODAL ============ -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-box">
+      <div class="modal-top">
+        <h2>⚙️ API Configuration</h2>
+        <button class="modal-x" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field"><label for="apiKeyInput">Gemini API Key</label><input type="password" id="apiKeyInput" placeholder="AIza…"><small>Stored in localStorage only. Never sent anywhere except the Gemini API.</small></div>
+        <div class="field"><label for="modelSelect">Model</label><select id="modelSelect"><option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option><option value="gemini-2.0-flash">Gemini 2.0 Flash</option><option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option><option value="gemini-1.5-pro">Gemini 1.5 Pro</option></select></div>
+        <button class="btn btn-glow full-w" id="saveSettingsBtn">Save &amp; Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LOADING ============ -->
+  <div class="loader-backdrop" id="loadingOverlay">
+    <div class="loader-center">
+      <div class="loader-ring"></div>
+      <p>Analyzing Profile Drift via Gemini…</p>
+      <small>Comparing Baseline DNA against Digital Exhaust</small>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sampleData.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
