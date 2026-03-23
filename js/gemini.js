@@ -24,11 +24,11 @@ Output Requirements (Strict JSON Format Only — no markdown fences, no extra te
   "risk_level": "[Low/Medium/High/Critical]",
   "profile_drift_summary": "[A 2-sentence explanation of how the employee's current work patterns differ from their hiring persona]",
   "xai_reasoning_tags": [
-    {"factor": "[Stressor Name]", "impact_weight": "[XX%]", "explanation": "[Brief 'Why' sentence]"},
-    {"factor": "[Stressor Name]", "impact_weight": "[XX%]", "explanation": "[Brief 'Why' sentence]"},
     {"factor": "[Stressor Name]", "impact_weight": "[XX%]", "explanation": "[Brief 'Why' sentence]"}
   ],
-  "intervention_tactic": "[One specific management action]"
+  "intervention_tactic": "[One specific management action]",
+  "manager_playbook_script": "[A direct quote for the manager to say to the employee, tailored to their specific stressors and persona]",
+  "retention_prediction_days": [integer 1-365, how many days until potential attrition]
 }`;
 
 /**
@@ -92,8 +92,8 @@ function collectEmployeeData() {
  * Models to try — ordered by preference.
  */
 const ALL_MODELS = [
-  "gemini-2.5-flash",
   "gemini-2.0-flash",
+  "gemini-2.0-flash-lite",
   "gemini-1.5-flash",
   "gemini-1.5-pro",
 ];
