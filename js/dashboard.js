@@ -175,12 +175,12 @@ function renderRoster(history) {
   }
 
   roster.innerHTML = history.map(record => {
-    const rawName = record.employee.name || "Unknown";
+    const rawName = (record.employee && record.employee.name) ? record.employee.name : "Unknown";
     const initials = rawName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
     
     // Privacy Mode Anonymization
     const name = isPrivacyMode ? `EMP_${record.id.toString().slice(-4)}` : rawName;
-    const role = isPrivacyMode ? "Confidential Role" : (record.employee.role || "Role");
+    const role = isPrivacyMode ? "Confidential Role" : ((record.employee && record.employee.role) ? record.employee.role : "Role");
     const rl = (record.result.risk_level || "").toLowerCase();
     
     return `

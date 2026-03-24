@@ -781,3 +781,10 @@ input,select,textarea,button { font-family: inherit; }
 @media (max-width: 900px) {
   .results-row-bottom { grid-template-columns: 1fr; }
 }
+
+/* Additions for Interview Chat Bubbles */
+.chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-msg.user .chat-avatar { background: rgba(124,58,237,0.1); color: var(--violet); border: 1px solid rgba(124,58,237,0.3); }
+.chat-msg.user .chat-bubble { border-radius: 12px; border-top-right-radius: 4px; background: rgba(124,58,237,0.05); border-color: rgba(124,58,237,0.2); }
+.blinking-dot { animation: blink 1.4s infinite both; font-size: 1.5rem; line-height: 0; }
+@keyframes blink { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }

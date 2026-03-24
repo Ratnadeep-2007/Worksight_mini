@@ -92,6 +92,7 @@ function collectEmployeeData() {
  * Models to try — ordered by preference.
  */
 const ALL_MODELS = [
+  "gemini-2.5-flash",
   "gemini-2.0-flash",
   "gemini-2.0-flash-lite",
   "gemini-1.5-flash",
@@ -104,7 +105,7 @@ const ALL_MODELS = [
  * - On 429: waits the retry delay, then tries the next model.
  * - On 400/403: stops immediately with a clear error.
  */
-async function analyzeProfileDrift(employeeData, apiKey, preferredModel = "gemini-2.0-flash") {
+async function analyzeProfileDrift(employeeData, apiKey, preferredModel = "gemini-2.5-flash") {
   // Put preferred model first, then the rest
   const modelsToTry = [preferredModel, ...ALL_MODELS.filter(m => m !== preferredModel)];
   const maxRetries = 2; // total retry rounds across all models

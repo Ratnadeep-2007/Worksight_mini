@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const meta = {
     dashboard:     { title: "Dashboard",        desc: "Employee wellness overview & workforce health" },
+    interview:     { title: "AI Interviewer",   desc: "Behavioral assessment & psychological profiling" },
     baseline:      { title: "Baseline DNA",     desc: "Recruitment silo — Psychological profiling & engagement scores" },
     digital:       { title: "Digital Exhaust",   desc: "Operational silo — Meeting density, login patterns & task velocity" },
     communication: { title: "Communication",     desc: "Communication silo — Message velocity, latency & network mapping" },
@@ -126,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const record = {
       id: Date.now(),
       timestamp: new Date().toISOString(),
-      employee: inputData.baseline, // Corrected from inputData.employee
+      employee: inputData.employee, 
       inputData: inputData,
       result: result
     };
@@ -176,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const model = localStorage.getItem("worksight_model") || "gemini-2.0-flash";
+    const model = localStorage.getItem("worksight_model") || "gemini-2.5-flash";
     const data  = collectEmployeeData();
 
     loader.classList.add("visible");
@@ -185,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const result = await analyzeProfileDrift(data, apiKey, model);
       const recordId = saveAnalysis(result, data);
-      renderResults(result, data.baseline, recordId);
+      renderResults(result, data.employee, recordId);
       switchPanel("results");
       showToast("Analysis complete — Burnout risk: " + (result.burnout_risk_score || "?") + "%", "success");
     } catch (err) {
