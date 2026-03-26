@@ -122,6 +122,73 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ═══════ AUTO-FILL FROM WORKSTREAM ═══════
+  const autoFillBtn = document.getElementById("autoFillExhaustBtn");
+  if (autoFillBtn) {
+    autoFillBtn.addEventListener("click", () => {
+      const exhaust = WorkstreamEngine.computeDigitalExhaust();
+      if (!exhaust || exhaust.totalTasks === 0) {
+        showToast("No workstream data yet — use the Workstream Chat first", "error");
+        return;
+      }
+
+      const data = WorkstreamEngine.getData();
+      const chatHistory = WorkstreamEngine.getChatHistory();
+      const stats = WorkstreamEngine.computeStats(data);
+
+      // ── Digital Exhaust: Task Velocity ──
+      setField("taskCompletionCurrent", stats.completionRate);
+      setField("taskCompletionBaseline", 85);  // assumed healthy baseline
+      const avgHours = exhaust.totalTasks > 0 ? Math.round((24 / Math.max(1, exhaust.totalTasks)) * 10) / 10 : 4;
+      setField("avgTaskTime", Math.min(avgHours, 24));
+
+      // ── Digital Exhaust: Meeting Density (derived from chat frequency) ──
+      const msgPerDay = chatHistory.length > 0 ? Math.round(chatHistory.length / Math.max(1, getActiveDays(chatHistory))) : 0;
+      const estimatedMeetings = Math.min(40, Math.round(msgPerDay * 2.5)); // rough proxy
+      setField("meetingsPerWeek", estimatedMeetings);
+      setField("meetingsBaseline", 12);
+      setField("backToBackPct", Math.min(90, Math.round(exhaust.blockedTasks / Math.max(1, exhaust.totalTasks) * 100 + 30)));
+
+      // ── Digital Exhaust: Work-Life Boundary ──
+      setField("lateNightLogins", exhaust.lateNightActivity);
+      setField("weekendLogins", exhaust.weekendActivity);
+
+      // ── Communication: Message Velocity ──
+      setField("msgFrequency", msgPerDay);
+      setField("msgFrequencyBaseline", Math.round(msgPerDay * 1.4)); // baseline assumes slightly higher engagement
+
+      // ── Communication: Response Latency (simulated from data density) ──
+      const latency = Math.max(5, 60 - msgPerDay * 3);
+      setField("responseLatency", latency);
+      setField("responseLatencyBaseline", 12);
+
+      // ── Communication: Network Interaction ──
+      const interactionScore = Math.min(100, Math.round(stats.completionRate * 0.7 + (100 - stats.blocked * 10) * 0.3));
+      setField("teamInteractionScore", interactionScore);
+      setField("teamInteractionBaseline", 72);
+
+      // Also fill employee name from role if Baseline DNA is empty
+      const nameField = document.getElementById("employeeName");
+      const user = WorkSightRoles.getUser();
+      if (nameField && !nameField.value.trim() && user) {
+        nameField.value = user.name;
+      }
+
+      showToast("✓ Digital Exhaust & Communication auto-filled from Workstream data!", "success");
+    });
+  }
+
+  function setField(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  }
+
+  function getActiveDays(chatHistory) {
+    if (chatHistory.length === 0) return 1;
+    const dates = new Set(chatHistory.map(m => new Date(m.timestamp).toDateString()));
+    return Math.max(1, dates.size);
+  }
+
   // ═══════ HISTORY & PERSISTENCE ═══════
   window.saveAnalysis = function(result, inputData) {
     const history = JSON.parse(localStorage.getItem("worksight_history") || "[]");
