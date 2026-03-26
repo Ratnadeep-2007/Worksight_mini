@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const meta = {
     dashboard:     { title: "Dashboard",        desc: "Employee wellness overview & workforce health" },
     interview:     { title: "AI Interviewer",   desc: "Behavioral assessment & psychological profiling" },
+    workstream:    { title: "Workstream Chat",  desc: "Natural language task extraction & intelligence" },
     baseline:      { title: "Baseline DNA",     desc: "Recruitment silo — Psychological profiling & engagement scores" },
     digital:       { title: "Digital Exhaust",   desc: "Operational silo — Meeting density, login patterns & task velocity" },
     communication: { title: "Communication",     desc: "Communication silo — Message velocity, latency & network mapping" },
@@ -220,6 +221,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Init
   refreshRoster();
 
+  // ═══════ ROLE & WORKSTREAM INIT ═══════
+  WorkSightRoles.init();
+  initWorkstreamChat();
+  refreshWorkstreamHealth();
+
   // ═══════ COPY JSON ═══════
   const copyBtn = document.getElementById("copyJsonBtn");
   if (copyBtn) {
@@ -237,4 +243,238 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3400);
   };
+
+  // ═══════ WORKSTREAM CHAT ═══════
+  function initWorkstreamChat() {
+    const wsInput = document.getElementById("wsInput");
+    const wsSendBtn = document.getElementById("wsSendBtn");
+    const wsStatus = document.getElementById("wsStatus");
+
+    if (!wsInput || !wsSendBtn) return;
+
+    // Check API key to enable/disable
+    function checkWsReady() {
+      const hasKey = !!(localStorage.getItem("worksight_api_key") || "").trim();
+      const hasRole = WorkSightRoles.isLoggedIn();
+      wsInput.disabled = !(hasKey && hasRole);
+      wsSendBtn.disabled = !(hasKey && hasRole);
+      if (!hasKey) wsStatus.textContent = "Set API key in Settings to begin";
+      else if (!hasRole) wsStatus.textContent = "Select a role to begin";
+      else wsStatus.textContent = "Ready — type a work update or ask a question";
+
+      // Update role badge in workstream
+      const wsRoleBadge = document.getElementById("wsRoleBadge");
+      if (wsRoleBadge && hasRole) {
+        const user = WorkSightRoles.getUser();
+        const cfg = WorkSightRoles.getRoleConfig(user.role);
+        wsRoleBadge.textContent = `${cfg.icon} ${cfg.label}`;
+      }
+    }
+    checkWsReady();
+    // Re-check when settings change
+    const observer = new MutationObserver(checkWsReady);
+    observer.observe(document.getElementById("apiDot"), { attributes: true });
+
+    // Load existing chat history into UI
+    const chatHistory = WorkstreamEngine.getChatHistory();
+    chatHistory.forEach(msg => {
+      appendWsMessage(msg.role === "user" ? "user" : "bot", msg.text);
+    });
+
+    // Render existing intelligence
+    renderIntelPanel();
+
+    async function sendWsMessage() {
+      const msg = wsInput.value.trim();
+      if (!msg) return;
+
+      const apiKey = (localStorage.getItem("worksight_api_key") || "").trim();
+      const model = localStorage.getItem("worksight_model") || "gemini-2.5-flash";
+      const user = WorkSightRoles.getUser();
+      if (!user) return;
+
+      // Role check for viewers
+      const config = WorkSightRoles.getRoleConfig(user.role);
+      if (!config.canSubmitUpdates && !msg.toLowerCase().match(/^(what|show|how|status|list|tell)/)) {
+        appendWsMessage("bot", "🔒 As a Viewer, you can only ask questions. Try: \"What is the workstream status?\"");
+        wsInput.value = "";
+        return;
+      }
+
+      appendWsMessage("user", msg);
+      wsInput.value = "";
+      wsInput.disabled = true;
+      wsSendBtn.disabled = true;
+      wsStatus.textContent = "🧠 Analyzing your update...";
+
+      // Show typing indicator
+      const typingId = appendWsMessage("bot", '<span class="blinking-dot">●</span>  <span class="blinking-dot" style="animation-delay:0.2s">●</span>  <span class="blinking-dot" style="animation-delay:0.4s">●</span>', true);
+
+      try {
+        const { result, updatedData } = await WorkstreamEngine.processMessage(msg, user.name, apiKey, model);
+
+        // Remove typing indicator and show response
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+
+        appendWsMessage("bot", result.response);
+
+        // Show extraction summary
+        if (result.summary) {
+          appendWsMessage("bot", `<div style="font-size:0.78rem; color:var(--text-2); background:rgba(124,58,237,0.05); padding:0.5rem 0.8rem; border-radius:6px; border-left:3px solid var(--violet); margin-top:-0.4rem;">📊 ${result.summary}</div>`, true);
+        }
+
+        renderIntelPanel();
+        refreshWorkstreamHealth();
+        showToast("Workstream updated", "success");
+
+      } catch (err) {
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+        appendWsMessage("bot", `⚠️ Error: ${err.message}. Check your API key in Settings.`);
+        showToast("Workstream error: " + err.message, "error");
+      }
+
+      wsInput.disabled = false;
+      wsSendBtn.disabled = false;
+      wsStatus.textContent = "Ready — type a work update or ask a question";
+      wsInput.focus();
+    }
+
+    wsSendBtn.addEventListener("click", sendWsMessage);
+    wsInput.addEventListener("keydown", e => { if (e.key === "Enter") sendWsMessage(); });
+  }
+
+  function appendWsMessage(role, content, isHtml = false) {
+    const chatBody = document.getElementById("wsChatHistory");
+    if (!chatBody) return;
+
+    const id = "ws-msg-" + Date.now();
+    const wrapper = document.createElement("div");
+    wrapper.id = id;
+    wrapper.className = `chat-msg ${role}`;
+    wrapper.style.cssText = "display:flex; gap:0.8rem; max-width:85%;";
+    if (role === "user") wrapper.style.alignSelf = "flex-end";
+
+    const avatarBg = role === "user" ? "rgba(124,58,237,0.1)" : "rgba(6,182,212,0.1)";
+    const avatarColor = role === "user" ? "var(--violet)" : "var(--cyan)";
+    const avatarBorder = role === "user" ? "rgba(124,58,237,0.3)" : "rgba(6,182,212,0.3)";
+    const avatarText = role === "user" ? (WorkSightRoles.getUser()?.name?.charAt(0)?.toUpperCase() || "U") : "WS";
+    const bubbleBg = role === "user" ? "rgba(124,58,237,0.05)" : "var(--surface-1)";
+    const bubbleBorder = role === "user" ? "rgba(124,58,237,0.2)" : "var(--border)";
+    const bubbleRadius = role === "user" ? "border-top-right-radius:4px" : "border-top-left-radius:4px";
+
+    wrapper.innerHTML = `
+      <div style="width:32px; height:32px; border-radius:50%; background:${avatarBg}; color:${avatarColor}; border:1px solid ${avatarBorder}; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.75rem; flex-shrink:0;">${avatarText}</div>
+      <div style="background:${bubbleBg}; padding:0.8rem 1rem; border-radius:12px; ${bubbleRadius}; color:var(--text-1); font-size:0.9rem; line-height:1.5; border:1px solid ${bubbleBorder};">${isHtml ? content : escapeHtml(content)}</div>
+    `;
+
+    if (role === "user") wrapper.style.flexDirection = "row-reverse";
+    chatBody.appendChild(wrapper);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return id;
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement("div");
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  // ═══════ INTELLIGENCE PANEL ═══════
+  function renderIntelPanel() {
+    const panel = document.getElementById("wsIntelPanel");
+    if (!panel) return;
+
+    const data = WorkstreamEngine.getData();
+    if (data.tasks.length === 0 && data.blockers.length === 0 && data.commitments.length === 0) {
+      panel.innerHTML = '<p class="card-hint">Tasks, blockers, and commitments extracted from your chat will appear here in real time.</p>';
+      return;
+    }
+
+    let html = "";
+
+    // Tasks
+    if (data.tasks.length > 0) {
+      html += '<div class="intel-section"><div class="intel-section-title">📋 Tasks (' + data.tasks.length + ')</div>';
+      data.tasks.slice(0, 15).forEach(t => {
+        html += `<div class="intel-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="intel-card-title">${escapeHtml(t.description)}</div>
+            <span class="intel-status ${t.status}">${t.status}</span>
+          </div>
+          <div class="intel-card-meta">${t.id} · ${t.assignee}${t.dueDate ? ' · Due: ' + t.dueDate : ''}</div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    // Blockers
+    const activeBlockers = data.blockers.filter(b => b.isActive);
+    if (activeBlockers.length > 0) {
+      html += '<div class="intel-section"><div class="intel-section-title">🚫 Active Blockers (' + activeBlockers.length + ')</div>';
+      activeBlockers.forEach(b => {
+        html += `<div class="intel-card" style="border-color:rgba(248,113,113,0.3);">
+          <div class="intel-card-title" style="color:#f87171;">${escapeHtml(b.description)}</div>
+          <div class="intel-card-meta">Linked: ${escapeHtml(b.linkedTaskDesc)} · By: ${escapeHtml(b.reportedBy)}</div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    // Commitments
+    const pending = data.commitments.filter(c => !c.isFulfilled);
+    if (pending.length > 0) {
+      html += '<div class="intel-section"><div class="intel-section-title">🤝 Pending Commitments (' + pending.length + ')</div>';
+      pending.forEach(c => {
+        html += `<div class="intel-card" style="border-color:rgba(251,191,36,0.3);">
+          <div class="intel-card-title">${escapeHtml(c.description)}</div>
+          <div class="intel-card-meta">${c.assignee}${c.dueDate ? ' · Due: ' + c.dueDate : ''}</div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    panel.innerHTML = html;
+  }
+
+  // ═══════ WORKSTREAM HEALTH DASHBOARD ═══════
+  function refreshWorkstreamHealth() {
+    const data = WorkstreamEngine.getData();
+    const stats = WorkstreamEngine.computeStats(data);
+
+    // Update stat numbers
+    const el = (id) => document.getElementById(id);
+    if (el("ws-total")) el("ws-total").textContent = stats.total;
+    if (el("ws-done")) el("ws-done").textContent = stats.done;
+    if (el("ws-progress")) el("ws-progress").textContent = stats.inProgress;
+    if (el("ws-blocked")) el("ws-blocked").textContent = stats.blocked;
+
+    // Health bar
+    const healthScore = Math.max(0, Math.min(100, stats.healthScore));
+    if (el("wsHealthFill")) el("wsHealthFill").style.width = healthScore + "%";
+    if (el("wsHealthScore")) el("wsHealthScore").textContent = healthScore + "%";
+
+    // Update workstream badge in sidebar
+    const wsBadge = document.getElementById("wsBadge");
+    if (wsBadge && stats.total > 0) {
+      wsBadge.textContent = stats.total;
+      wsBadge.style.display = "flex";
+    }
+
+    // Activity feed
+    const feed = el("wsActivityFeed");
+    if (feed && data.tasks.length > 0) {
+      const recent = [...data.tasks].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).slice(0, 8);
+      feed.innerHTML = recent.map(t => {
+        const dotClass = t.status === "DONE" ? "done" : t.status === "BLOCKED" ? "blocked" : "created";
+        return `<div class="ws-activity-item">
+          <div class="ws-activity-dot ${dotClass}"></div>
+          <span><strong>${t.status}</strong> — ${escapeHtml(t.description).substring(0, 50)}</span>
+        </div>`;
+      }).join("");
+    }
+  }
+  window.refreshWorkstreamHealth = refreshWorkstreamHealth;
+
 });
