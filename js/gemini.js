@@ -261,6 +261,7 @@ async function _callGemini(employeeData, apiKey, model) {
     throw new Error("Failed to parse Gemini response as JSON: " + cleaned.slice(0, 200));
   }
 }
+<<<<<<< HEAD
 
 const TRANSCRIPT_SYSTEM_PROMPT = `You are a data extraction AI. Read the following interview transcript and extract the requested fields into a flat JSON object. 
 If a field is not discussed or cannot be confidently inferred, set its value to null.
@@ -309,3 +310,5 @@ async function parseTranscriptWithGemini(transcript, apiKey, model) {
   let cleaned = rawText.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "");
   return JSON.parse(cleaned);
 }
+=======
+>>>>>>> ac9261109212689b38ecc2c392ebee87b91d153d

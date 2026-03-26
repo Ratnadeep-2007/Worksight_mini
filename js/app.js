@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3400);
   };
+<<<<<<< HEAD
 
   // ═══════ TRANSCRIPT PARSING ═══════
   const parseBtn = document.getElementById("parseTranscriptBtn");
@@ -177,4 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+=======
+>>>>>>> ac9261109212689b38ecc2c392ebee87b91d153d
 });
