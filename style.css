@@ -1,39 +1,39 @@
 /* =========================================================================
-   WorkSight – Dark-Side Theme
-   Premium dark UI with deep purples, neon cyan accents, and glassmorphism
+   WorkSight – Minimalist Professional Theme
+   Clean, sophisticated dark UI with subtle blue/violet accents and refined contrast
    ========================================================================= */
 
 /* ---- DESIGN TOKENS ---- */
 :root {
   /* Surfaces */
-  --bg-root: #07080f;
-  --bg-body: #0c0e18;
-  --bg-sidebar: #090b14;
-  --bg-card: #12141f;
-  --bg-card-elevated: #181b28;
-  --bg-input: #0f111a;
-  --bg-hover: rgba(167, 139, 250, 0.06);
+  --bg-root: #09090b;
+  --bg-body: #09090b;
+  --bg-sidebar: #09090b;
+  --bg-card: #141415;
+  --bg-card-elevated: #1e1e21;
+  --bg-input: #18181b;
+  --bg-hover: rgba(255, 255, 255, 0.04);
 
   /* Borders & Glass */
-  --border: rgba(255, 255, 255, 0.05);
-  --border-focus: rgba(124, 58, 237, 0.45);
-  --glass: rgba(18, 20, 31, 0.72);
-  --glass-blur: 20px;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.15);
+  --glass: rgba(20, 20, 21, 0.85);
+  --glass-blur: 24px;
 
   /* Text */
-  --text-1: #eef0f8;
-  --text-2: #8b92b0;
-  --text-3: #4b5072;
+  --text-1: #fafafa;
+  --text-2: #a1a1aa;
+  --text-3: #71717a;
 
-  /* Accents */
-  --violet: #7c3aed;
-  --violet-light: #a78bfa;
-  --cyan: #06b6d4;
-  --cyan-light: #22d3ee;
+  /* Accents (Professional Slate Blue / Subtle Violet) */
+  --violet: #3b82f6;
+  --violet-light: #60a5fa;
+  --cyan: #8b5cf6;
+  --cyan-light: #a78bfa;
 
   /* Gradients */
-  --grad-primary: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
-  --grad-glow:    linear-gradient(135deg, #a78bfa 0%, #22d3ee 100%);
+  --grad-primary: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  --grad-glow:    linear-gradient(135deg, rgba(59,130,246,0.3) 0%, rgba(99,102,241,0.3) 100%);
 
   /* Semantic Risk */
   --risk-low: #34d399;
@@ -42,15 +42,15 @@
   --risk-critical: #ef4444;
 
   /* Layer colors */
-  --clr-recruitment: #a78bfa;
-  --clr-operational: #22d3ee;
-  --clr-communication: #f472b6;
+  --clr-recruitment: #60a5fa;
+  --clr-operational: #818cf8;
+  --clr-communication: #a78bfa;
   --clr-predictive: #34d399;
 
   /* Sizing */
   --sidebar-w: 256px;
-  --radius: 14px;
-  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-sm: 6px;
   --ease: cubic-bezier(.4,0,.2,1);
 }
 
